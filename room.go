@@ -39,13 +39,13 @@ func (r *Room) GetUserByName(userName string) (User, bool) {
 	return user, ok
 }
 
-func (r *Room) addUser(u User) map[string]User {
+func (r *Room) AddUserToRoom(u User) map[string]User {
 	r.usersMap[u.name] = u
 	u.AddRoom(*r)
 	return r.usersMap
 }
 
-func (r *Room) removeUser(u User) map[string]User {
+func (r *Room) RemoveUserFromRoom(u User) map[string]User {
 	u.RemoveRoom(*r)
 	delete(r.usersMap, u.GetName())
 	return r.usersMap
@@ -57,6 +57,6 @@ func (r *Room) ClearUsers() map[string]User {
 
 func (r *Room) RemoveAllUsers() {
 	for _, user := range r.usersMap {
-		r.removeUser(user)
+		r.RemoveUserFromRoom(user)
 	}
 }

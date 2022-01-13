@@ -3,7 +3,7 @@ package goroomlib
 type User struct {
 	id             int
 	name           string
-	roomMap        map[string]Room
+	joinedRooms    map[string]Room
 	userProperties map[string]interface{}
 }
 
@@ -15,22 +15,22 @@ func (u *User) GetName() string {
 	return u.name
 }
 
-func (u *User) GetRoomMap() map[string]Room {
-	return u.roomMap
+func (u *User) GetJoinedRooms() map[string]Room {
+	return u.joinedRooms
 }
 
 func (u *User) AddRoom(r Room) map[string]Room {
-	u.roomMap[r.GetRoomName()] = r
-	return u.roomMap
+	u.joinedRooms[r.GetRoomName()] = r
+	return u.joinedRooms
 }
 
 func (u *User) RemoveRoom(r Room) map[string]Room {
-	delete(u.GetRoomMap(), r.GetRoomName())
-	return u.roomMap
+	delete(u.GetJoinedRooms(), r.GetRoomName())
+	return u.joinedRooms
 }
 
-func (u *User) GetRoomByName(roomName string) (Room, bool) {
-	room, ok := u.GetRoomMap()[roomName]
+func (u *User) GetJoinedRoomByName(roomName string) (Room, bool) {
+	room, ok := u.GetJoinedRooms()[roomName]
 	return room, ok
 }
 
@@ -39,7 +39,7 @@ func (u *User) Remove() {
 }
 
 func (u *User) DisconnectUser() {
-	for _, room := range u.roomMap {
-		room.removeUser(*u)
+	for _, room := range u.joinedRooms {
+		room.RemoveUserFromRoom(*u)
 	}
 }

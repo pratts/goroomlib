@@ -14,7 +14,7 @@ func (us *UserService) initUserMaps() {
 func (us *UserService) createUser(name string, userProperties map[string]interface{}) User {
 	us.lastUserId += 1
 	user := User{id: us.lastUserId, name: name, userProperties: userProperties}
-	user.roomMap = make(map[string]Room)
+	user.joinedRooms = make(map[string]Room)
 
 	us.usernameMap[name] = user
 	us.userIdMap[us.lastUserId] = user
