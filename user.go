@@ -2,12 +2,17 @@ package goroomlib
 
 type User struct {
 	id             int
+	userId         int
 	name           string
 	joinedRooms    map[string]Room
 	userProperties map[string]interface{}
 }
 
 func (u *User) GetId() int {
+	return u.id
+}
+
+func (u *User) GetUserId() int {
 	return u.id
 }
 

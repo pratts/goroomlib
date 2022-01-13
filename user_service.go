@@ -11,9 +11,9 @@ func (us *UserService) initUserMaps() {
 	us.userIdMap = make(map[int]User)
 }
 
-func (us *UserService) createUser(name string, userProperties map[string]interface{}) User {
+func (us *UserService) createUser(userId int, name string, userProperties map[string]interface{}) User {
 	us.lastUserId += 1
-	user := User{id: us.lastUserId, name: name, userProperties: userProperties}
+	user := User{id: us.lastUserId, userId: userId, name: name, userProperties: userProperties}
 	user.joinedRooms = make(map[string]Room)
 
 	us.usernameMap[name] = user
