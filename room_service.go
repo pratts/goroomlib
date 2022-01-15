@@ -5,7 +5,7 @@ type RoomService struct {
 	numRoomsCreated int
 }
 
-func (rs *RoomService) InitRoomService() {
+func (rs *RoomService) Init() {
 	rs.roomMap = make(map[string]Room)
 	rs.numRoomsCreated = 0
 }
@@ -16,7 +16,7 @@ func (rs *RoomService) GetRoomMap() map[string]Room {
 
 func (rs *RoomService) createRoom(roomName string, maxUsers int, roomProperties map[string]interface{}) Room {
 	room := Room{id: rs.numRoomsCreated + 1, name: roomName, maxUserCount: maxUsers}
-	room.InitRoomData(roomProperties)
+	room.Init(roomProperties)
 	rs.numRoomsCreated += 1
 	rs.addRoom(room)
 	return room

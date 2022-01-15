@@ -8,7 +8,7 @@ type Room struct {
 	roomProperties map[string]interface{}
 }
 
-func (r *Room) InitRoomData(roomProperties map[string]interface{}) {
+func (r *Room) Init(roomProperties map[string]interface{}) {
 	r.createUserMap()
 	r.roomProperties = roomProperties
 }

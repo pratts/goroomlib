@@ -6,7 +6,7 @@ type UserService struct {
 	lastUserId  int
 }
 
-func (us *UserService) initUserMaps() {
+func (us *UserService) Init() {
 	us.usernameMap = make(map[string]User)
 	us.userIdMap = make(map[int]User)
 }
