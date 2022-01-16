@@ -18,14 +18,44 @@ Library Usage:
 1. Importing
 
   `
-    package main
+    // Initializing the App
+	app := goroomlib.InitApp()
 
-    import (
-      "fmt"
-      "github.com/pratts/goroomlib"
-    )
+	/*
+		Creating a Room with following properties:
+			1. Name : "test"
+			2. Max users allowed : 10
+			3. Room Properties : Is password protected with "test" password
+	*/
+	roomService := app.GetRoomService()
+	roomProperties := make(map[string]interface{})
+	roomProperties["isPasswordProtected"] = true
+	roomProperties["password"] = "test"
+	(&roomService).CreateRoom("test", 10, roomProperties)
 
-    func main() {
-      app := goroomlib.InitApp()
-    }
+	// Fetching a room by name
+	room, isFound := (&roomService).GetRoomByName("test")
+
+	/*
+		Creating a Room with following properties:
+			1. User ID : 1
+			2. Name : "pratts"
+			3. User Properties : With isAdmin flag to true
+	*/
+	userService := app.GetUserService()
+	userProperties := make(map[string]interface{})
+	userProperties["isAdmin"] = true
+	user := (&userService).CreateUser(1, "pratts", userProperties)
+
+	// Adding a user to a room
+	roomService.AddUserToRoom(user, "test")
+
+	// Removing a room and all users in it
+	(&roomService).RemoveRoom("test")
+
+	// Fetching all the users in a room
+	users := (&roomService).GetUserForRoom("test")
+
+    // Removing user from  a room
+    (&roomService).GetUserForRoom(user, "test")
 `
