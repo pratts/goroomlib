@@ -11,7 +11,7 @@ func (us *UserService) Init() {
 	us.userIdMap = make(map[int]User)
 }
 
-func (us *UserService) createUser(userId int, name string, userProperties map[string]interface{}) User {
+func (us *UserService) CreateUser(userId int, name string, userProperties map[string]interface{}) User {
 	us.lastUserId += 1
 	user := User{id: us.lastUserId, userId: userId, name: name, userProperties: userProperties}
 	user.joinedRooms = make(map[string]Room)
@@ -19,6 +19,11 @@ func (us *UserService) createUser(userId int, name string, userProperties map[st
 	us.usernameMap[name] = user
 	us.userIdMap[us.lastUserId] = user
 	return user
+}
+
+func (us *UserService) GetUserByName(name string) (User, bool) {
+	user, err := us.usernameMap[name]
+	return user, err
 }
 
 func (us *UserService) RemoveUserByName(name string) {

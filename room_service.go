@@ -50,6 +50,10 @@ func (rs *RoomService) GetUserForRoom(roomName string) map[string]User {
 func (rs *RoomService) AddUserToRoom(user User, roomName string) bool {
 	room, ok := rs.roomMap[roomName]
 	if ok == true {
+		userCount := len(room.usersMap)
+		if userCount == room.maxUserCount {
+			return false
+		}
 		room.AddUserToRoom(user)
 		return true
 	}
