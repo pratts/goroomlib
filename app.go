@@ -17,3 +17,11 @@ func InitApp() *App {
 	app.userService = userService
 	return &app
 }
+
+func (app *App) GetRoomService() RoomService {
+	return app.roomService
+}
+
+func (app *App) GetUserService() UserService {
+	return app.userService
+}
