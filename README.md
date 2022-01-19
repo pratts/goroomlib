@@ -18,14 +18,15 @@ Library Usage:
 1. Importing
 
   `
-    // Initializing the App
+	
+	// Initializing the App
 	app := goroomlib.InitApp()
 
 	/*
-		Creating a Room with following properties:
-			1. Name : "test"
-			2. Max users allowed : 10
-			3. Room Properties : Is password protected with "test" password
+	Creating a Room with following properties:
+		1. Name : "test"
+		2. Max users allowed : 10
+		3. Room Properties : Is password protected with "test" password
 	*/
 	roomService := app.GetRoomService()
 	roomProperties := make(map[string]interface{})
@@ -37,10 +38,10 @@ Library Usage:
 	room, isFound := (&roomService).GetRoomByName("test")
 
 	/*
-		Creating a Room with following properties:
-			1. User ID : 1
-			2. Name : "pratts"
-			3. User Properties : With isAdmin flag to true
+	Creating a Room with following properties:
+		1. User ID : 1
+		2. Name : "pratts"
+		3. User Properties : With isAdmin flag to true
 	*/
 	userService := app.GetUserService()
 	userProperties := make(map[string]interface{})
@@ -56,6 +57,6 @@ Library Usage:
 	// Fetching all the users in a room
 	users := (&roomService).GetUserForRoom("test")
 
-    // Removing user from  a room
-    (&roomService).GetUserForRoom(user, "test")
+	// Removing user from  a room
+	(&roomService).GetUserForRoom(user, "test")
 `
