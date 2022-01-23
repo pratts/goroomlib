@@ -1,40 +1,40 @@
 package goroomlib
 
 type UserService struct {
-	usernameMap map[string]User
-	userIdMap   map[int]User
-	lastUserId  int
+	UsernameMap map[string]User
+	UserIdMap   map[int]User
+	LastUserId  int
 }
 
 func (us *UserService) Init() {
-	us.usernameMap = make(map[string]User)
-	us.userIdMap = make(map[int]User)
+	us.UsernameMap = make(map[string]User)
+	us.UserIdMap = make(map[int]User)
 }
 
 func (us *UserService) CreateUser(userId int, name string, userProperties map[string]interface{}) User {
-	us.lastUserId += 1
-	user := User{id: us.lastUserId, userId: userId, name: name}
+	us.LastUserId += 1
+	user := User{Id: us.LastUserId, UserId: userId, Name: name}
 	user.Init(userProperties)
 
-	us.usernameMap[name] = user
-	us.userIdMap[us.lastUserId] = user
+	us.UsernameMap[name] = user
+	us.UserIdMap[us.LastUserId] = user
 	return user
 }
 
 func (us *UserService) GetUserByName(name string) (User, bool) {
-	user, err := us.usernameMap[name]
+	user, err := us.UsernameMap[name]
 	return user, err
 }
 
 func (us *UserService) RemoveUserByName(name string) {
-	user, err := us.usernameMap[name]
+	user, err := us.UsernameMap[name]
 	if err == false {
 		user.Remove()
 	}
 }
 
 func (us *UserService) RemoveUserById(id int) {
-	user, err := us.userIdMap[id]
+	user, err := us.UserIdMap[id]
 	if err == false {
 		user.Remove()
 	}

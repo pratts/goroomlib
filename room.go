@@ -5,11 +5,11 @@ import (
 )
 
 type Room struct {
-	id             int
-	name           string
-	usersMap       map[string]User
-	maxUserCount   int
-	roomProperties RoomProperties
+	Id           int
+	Name         string
+	UsersMap     map[string]User
+	MaxUserCount int
+	Properties   RoomProperties
 }
 
 type RoomProperties struct {
@@ -17,57 +17,57 @@ type RoomProperties struct {
 	Password   string `json:"password"`
 }
 
-func (r *Room) Init(roomProperties map[string]interface{}) {
+func (r *Room) Init(Properties map[string]interface{}) {
 	r.createUserMap()
-	if roomProperties == nil || len(roomProperties) == 0 {
-		roomProperties = make(map[string]interface{})
-		roomProperties["IsPassword"] = false
+	if Properties == nil || len(Properties) == 0 {
+		Properties = make(map[string]interface{})
+		Properties["IsPassword"] = false
 	}
-	jsonbody, err := json.Marshal(roomProperties)
+	jsonbody, err := json.Marshal(Properties)
 	if err != nil {
 		return
 	}
 
-	r.roomProperties = RoomProperties{}
-	json.Unmarshal(jsonbody, &(r.roomProperties))
+	r.Properties = RoomProperties{}
+	json.Unmarshal(jsonbody, &(r.Properties))
 }
 
 func (r *Room) GetId() int {
-	return r.id
+	return r.Id
 }
 
 func (r *Room) GetRoomName() string {
-	return r.name
+	return r.Name
 }
 
 func (r *Room) createUserMap() map[string]User {
-	r.usersMap = make(map[string]User)
-	return r.usersMap
+	r.UsersMap = make(map[string]User)
+	return r.UsersMap
 }
 
 func (r *Room) GetUserMap() map[string]User {
-	return r.usersMap
+	return r.UsersMap
 }
 
 func (r *Room) GetMaxUserCount() int {
-	return r.maxUserCount
+	return r.MaxUserCount
 }
 
 func (r *Room) GetUserByName(userName string) (User, bool) {
-	user, ok := r.usersMap[userName]
+	user, ok := r.UsersMap[userName]
 	return user, ok
 }
 
 func (r *Room) AddUserToRoom(u User) map[string]User {
-	r.usersMap[u.name] = u
+	r.UsersMap[u.Name] = u
 	u.AddRoom(*r)
-	return r.usersMap
+	return r.UsersMap
 }
 
 func (r *Room) RemoveUserFromRoom(u User) map[string]User {
 	u.RemoveRoom(*r)
-	delete(r.usersMap, u.GetName())
-	return r.usersMap
+	delete(r.UsersMap, u.GetName())
+	return r.UsersMap
 }
 
 func (r *Room) ClearUsers() map[string]User {
@@ -75,7 +75,7 @@ func (r *Room) ClearUsers() map[string]User {
 }
 
 func (r *Room) RemoveAllUsers() {
-	for _, user := range r.usersMap {
+	for _, user := range r.UsersMap {
 		r.RemoveUserFromRoom(user)
 	}
 }

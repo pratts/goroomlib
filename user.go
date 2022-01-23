@@ -3,65 +3,65 @@ package goroomlib
 import "encoding/json"
 
 type User struct {
-	id             int
-	userId         int
-	name           string
-	joinedRooms    map[string](*Room)
-	userProperties UserProperties
-	isConnected    bool
+	Id          int
+	UserId      int
+	Name        string
+	JoinedRooms map[string](*Room)
+	Properties  UserProperties
+	IsConnected bool
 }
 
 type UserProperties struct {
 	IsAdmin bool `json:"isAdmin"`
 }
 
-func (u *User) Init(userProperties map[string]interface{}) {
-	u.joinedRooms = make(map[string]*Room)
-	if userProperties == nil || len(userProperties) == 0 {
-		userProperties = make(map[string]interface{})
-		userProperties["IsAdmin"] = false
+func (u *User) Init(Properties map[string]interface{}) {
+	u.JoinedRooms = make(map[string]*Room)
+	if Properties == nil || len(Properties) == 0 {
+		Properties = make(map[string]interface{})
+		Properties["IsAdmin"] = false
 	}
-	jsonbody, err := json.Marshal(userProperties)
+	jsonbody, err := json.Marshal(Properties)
 	if err != nil {
 		return
 	}
 
-	u.userProperties = UserProperties{}
-	json.Unmarshal(jsonbody, &(u.userProperties))
+	u.Properties = UserProperties{}
+	json.Unmarshal(jsonbody, &(u.Properties))
 }
 
 func (u *User) GetId() int {
-	return u.id
+	return u.Id
 }
 
 func (u *User) GetUserId() int {
-	return u.id
+	return u.UserId
 }
 
 func (u *User) GetName() string {
-	return u.name
+	return u.Name
 }
 
-func (u *User) SetIsConnected(isConnected bool) {
-	u.isConnected = isConnected
+func (u *User) SetIsConnected(IsConnected bool) {
+	u.IsConnected = IsConnected
 }
 
 func (u *User) GetIsConnected() bool {
-	return u.isConnected
+	return u.IsConnected
 }
 
 func (u *User) GetJoinedRooms() map[string]*Room {
-	return u.joinedRooms
+	return u.JoinedRooms
 }
 
 func (u *User) AddRoom(r Room) map[string]*Room {
-	u.joinedRooms[r.GetRoomName()] = &r
-	return u.joinedRooms
+	u.JoinedRooms[r.GetRoomName()] = &r
+	return u.JoinedRooms
 }
 
 func (u *User) RemoveRoom(r Room) map[string]*Room {
 	delete(u.GetJoinedRooms(), r.GetRoomName())
-	return u.joinedRooms
+	return u.JoinedRooms
 }
 
 func (u *User) GetJoinedRoomByName(roomName string) (Room, bool) {
@@ -74,7 +74,7 @@ func (u *User) Remove() {
 }
 
 func (u *User) DisconnectUser() {
-	for _, room := range u.joinedRooms {
+	for _, room := range u.JoinedRooms {
 		(*room).RemoveUserFromRoom(*u)
 	}
 }

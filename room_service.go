@@ -1,46 +1,46 @@
 package goroomlib
 
 type RoomService struct {
-	roomMap         map[string]Room
-	numRoomsCreated int
+	RoomMap         map[string]Room
+	NumRoomsCreated int
 }
 
 func (rs *RoomService) Init() {
-	rs.roomMap = make(map[string]Room)
-	rs.numRoomsCreated = 0
+	rs.RoomMap = make(map[string]Room)
+	rs.NumRoomsCreated = 0
 }
 
 func (rs *RoomService) GetRoomMap() map[string]Room {
-	return rs.roomMap
+	return rs.RoomMap
 }
 
 func (rs *RoomService) CreateRoom(roomName string, maxUsers int, roomProperties map[string]interface{}) Room {
-	room := Room{id: rs.numRoomsCreated + 1, name: roomName, maxUserCount: maxUsers}
+	room := Room{Id: rs.NumRoomsCreated + 1, Name: roomName, MaxUserCount: maxUsers}
 	room.Init(roomProperties)
-	rs.numRoomsCreated += 1
+	rs.NumRoomsCreated += 1
 	rs.addRoom(room)
 	return room
 }
 
 func (rs *RoomService) addRoom(room Room) {
-	rs.roomMap[room.GetRoomName()] = room
+	rs.RoomMap[room.GetRoomName()] = room
 }
 
 func (rs *RoomService) RemoveRoom(roomName string) {
-	room, ok := rs.roomMap[roomName]
+	room, ok := rs.RoomMap[roomName]
 	if ok == true {
 		room.RemoveAllUsers()
 	}
-	delete(rs.roomMap, roomName)
+	delete(rs.RoomMap, roomName)
 }
 
 func (rs *RoomService) GetRoomByName(roomName string) (Room, bool) {
-	room, ok := rs.roomMap[roomName]
+	room, ok := rs.RoomMap[roomName]
 	return room, ok
 }
 
 func (rs *RoomService) GetUserForRoom(roomName string) map[string]User {
-	room, ok := rs.roomMap[roomName]
+	room, ok := rs.RoomMap[roomName]
 	if ok == true {
 		return room.GetUserMap()
 	}
@@ -48,10 +48,10 @@ func (rs *RoomService) GetUserForRoom(roomName string) map[string]User {
 }
 
 func (rs *RoomService) AddUserToRoom(user User, roomName string) bool {
-	room, ok := rs.roomMap[roomName]
+	room, ok := rs.RoomMap[roomName]
 	if ok == true {
-		userCount := len(room.usersMap)
-		if userCount == room.maxUserCount {
+		userCount := len(room.UsersMap)
+		if userCount == room.MaxUserCount {
 			return false
 		}
 		room.AddUserToRoom(user)
@@ -61,7 +61,7 @@ func (rs *RoomService) AddUserToRoom(user User, roomName string) bool {
 }
 
 func (rs *RoomService) RemoveUserFromRoom(user User, roomName string) bool {
-	room, ok := rs.roomMap[roomName]
+	room, ok := rs.RoomMap[roomName]
 	if ok == true {
 		room.RemoveUserFromRoom(user)
 		return true
