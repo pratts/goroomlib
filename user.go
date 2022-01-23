@@ -1,12 +1,33 @@
 package goroomlib
 
+import "encoding/json"
+
 type User struct {
 	id             int
 	userId         int
 	name           string
 	joinedRooms    map[string](*Room)
-	userProperties map[string]interface{}
+	userProperties UserProperties
 	isConnected    bool
+}
+
+type UserProperties struct {
+	IsAdmin bool `json:"isAdmin"`
+}
+
+func (u *User) Init(userProperties map[string]interface{}) {
+	u.joinedRooms = make(map[string]*Room)
+	if userProperties == nil || len(userProperties) == 0 {
+		userProperties = make(map[string]interface{})
+		userProperties["IsAdmin"] = false
+	}
+	jsonbody, err := json.Marshal(userProperties)
+	if err != nil {
+		return
+	}
+
+	u.userProperties = UserProperties{}
+	json.Unmarshal(jsonbody, &(u.userProperties))
 }
 
 func (u *User) GetId() int {
