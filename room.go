@@ -13,7 +13,7 @@ type Room struct {
 }
 
 type RoomProperties struct {
-	IsPassword bool   `json:"isPassword"`
+	IsPassword bool   `json:"isPasswordProtected"`
 	Password   string `json:"password"`
 }
 
