@@ -6,7 +6,7 @@ type User struct {
 	Id          int
 	UserId      int
 	Name        string
-	JoinedRooms map[string](*Room)
+	JoinedRooms map[string](bool)
 	Properties  UserProperties
 	IsConnected bool
 }
@@ -16,7 +16,7 @@ type UserProperties struct {
 }
 
 func (u *User) Init(Properties map[string]interface{}) {
-	u.JoinedRooms = make(map[string]*Room)
+	u.JoinedRooms = make(map[string]bool)
 	if Properties == nil || len(Properties) == 0 {
 		Properties = make(map[string]interface{})
 		Properties["IsAdmin"] = false
@@ -50,23 +50,23 @@ func (u *User) GetIsConnected() bool {
 	return u.IsConnected
 }
 
-func (u *User) GetJoinedRooms() map[string]*Room {
+func (u *User) GetJoinedRooms() map[string]bool {
 	return u.JoinedRooms
 }
 
-func (u *User) AddRoom(r Room) map[string]*Room {
-	u.JoinedRooms[r.GetRoomName()] = &r
+func (u *User) AddRoom(r Room) map[string]bool {
+	u.JoinedRooms[r.GetRoomName()] = true
 	return u.JoinedRooms
 }
 
-func (u *User) RemoveRoom(r Room) map[string]*Room {
+func (u *User) RemoveRoom(r Room) map[string]bool {
 	delete(u.GetJoinedRooms(), r.GetRoomName())
 	return u.JoinedRooms
 }
 
-func (u *User) GetJoinedRoomByName(roomName string) (Room, bool) {
+func (u *User) GetJoinedRoomByName(roomName string) (bool, bool) {
 	room, ok := u.GetJoinedRooms()[roomName]
-	return *room, ok
+	return room, ok
 }
 
 func (u *User) Remove() {
@@ -74,7 +74,11 @@ func (u *User) Remove() {
 }
 
 func (u *User) DisconnectUser() {
-	for _, room := range u.JoinedRooms {
-		(*room).RemoveUserFromRoom(*u)
+	for roomName, _ := range u.JoinedRooms {
+		roomService := GetAppInstance().GetRoomService()
+		room, err := roomService.GetRoomByName(roomName)
+		if err == true {
+			(&room).RemoveUserFromRoom(*u)
+		}
 	}
 }
