@@ -6,15 +6,13 @@ type App struct {
 }
 
 func InitApp() *App {
-	app := App{}
-	roomService := RoomService{}
-	roomService.Init()
+	app := App{
+		roomService: RoomService{},
+		userService: UserService{},
+	}
+	app.roomService.Init()
+	app.userService.Init()
 
-	userService := UserService{}
-	userService.Init()
-
-	app.roomService = roomService
-	app.userService = userService
 	return &app
 }
 
