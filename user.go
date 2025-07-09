@@ -1,6 +1,9 @@
 package goroomlib
 
+import "sync"
+
 type User struct {
+	mu          sync.RWMutex
 	id          int
 	userId      int
 	name        string
@@ -9,6 +12,8 @@ type User struct {
 }
 
 func (u *User) Init() {
+	u.mu.Lock()
+	defer u.mu.Unlock()
 	u.joinedRooms = make(map[string]*Room)
 }
 
@@ -33,21 +38,29 @@ func (u *User) GetIsConnected() bool {
 }
 
 func (u *User) GetJoinedRooms() map[string]*Room {
+	u.mu.RLock()
+	defer u.mu.RUnlock()
 	return u.joinedRooms
 }
 
 func (u *User) AddRoom(r *Room) map[string]*Room {
+	u.mu.Lock()
+	defer u.mu.Unlock()
 	u.joinedRooms[r.GetRoomName()] = r
 	return u.joinedRooms
 }
 
 func (u *User) RemoveRoom(r *Room) map[string]*Room {
-	delete(u.GetJoinedRooms(), r.GetRoomName())
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	delete(u.joinedRooms, r.GetRoomName())
 	return u.joinedRooms
 }
 
 func (u *User) GetJoinedRoomByName(roomName string) (*Room, bool) {
-	room, ok := u.GetJoinedRooms()[roomName]
+	u.mu.RLock()
+	defer u.mu.RUnlock()
+	room, ok := u.joinedRooms[roomName]
 	return room, ok
 }
 
@@ -56,6 +69,8 @@ func (u *User) Remove() {
 }
 
 func (u *User) DisconnectUser() {
+	u.mu.Lock()
+	defer u.mu.Unlock()
 	for _, room := range u.joinedRooms {
 		room.RemoveUserFromRoom(u)
 	}
