@@ -43,14 +43,16 @@ func (u *User) GetJoinedRooms() map[string]*Room {
 	return u.joinedRooms
 }
 
-func (u *User) AddRoom(r *Room) map[string]*Room {
+// addRoom is unexported; atomic add should be done via RoomService
+func (u *User) addRoom(r *Room) map[string]*Room {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	u.joinedRooms[r.GetRoomName()] = r
 	return u.joinedRooms
 }
 
-func (u *User) RemoveRoom(r *Room) map[string]*Room {
+// removeRoom is unexported; atomic remove should be done via RoomService
+func (u *User) removeRoom(r *Room) map[string]*Room {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	delete(u.joinedRooms, r.GetRoomName())
@@ -72,6 +74,6 @@ func (u *User) DisconnectUser() {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	for _, room := range u.joinedRooms {
-		room.RemoveUserFromRoom(u)
+		room.removeUserFromRoom(u)
 	}
 }

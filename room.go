@@ -46,18 +46,20 @@ func (r *Room) GetUserByName(userName string) (*User, bool) {
 	return user, ok
 }
 
-func (r *Room) AddUserToRoom(u *User) map[string]*User {
+// addUserToRoom is unexported; atomic add should be done via RoomService
+func (r *Room) addUserToRoom(u *User) map[string]*User {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.usersMap[u.name] = u
-	u.AddRoom(r)
+	u.addRoom(r)
 	return r.usersMap
 }
 
-func (r *Room) RemoveUserFromRoom(u *User) map[string]*User {
+// removeUserFromRoom is unexported; atomic remove should be done via RoomService
+func (r *Room) removeUserFromRoom(u *User) map[string]*User {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	u.RemoveRoom(r)
+	u.removeRoom(r)
 	delete(r.usersMap, u.GetName())
 	return r.usersMap
 }
@@ -70,6 +72,6 @@ func (r *Room) RemoveAllUsers() {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	for _, user := range r.usersMap {
-		r.RemoveUserFromRoom(user)
+		r.removeUserFromRoom(user)
 	}
 }

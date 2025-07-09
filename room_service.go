@@ -62,28 +62,54 @@ func (rs *RoomService) GetUserForRoom(roomName string) map[string]*User {
 	return nil
 }
 
+// AddUserToRoom atomically adds a user to a room and the room to the user's joinedRooms.
+// Locks Room first, then User to avoid deadlocks.
 func (rs *RoomService) AddUserToRoom(user *User, roomName string) bool {
-	rs.mu.Lock()
-	defer rs.mu.Unlock()
+	rs.mu.RLock() // Only reading roomMap
 	room, ok := rs.roomMap[roomName]
-	if ok {
-		userCount := len(room.usersMap)
-		if userCount == room.maxUserCount {
-			return false
-		}
-		room.AddUserToRoom(user)
-		return true
+	rs.mu.RUnlock()
+	if !ok {
+		return false
 	}
-	return false
+
+	// Lock Room first, then User (consistent order)
+	room.mu.Lock()
+	defer room.mu.Unlock()
+	user.mu.Lock()
+	defer user.mu.Unlock()
+
+	userCount := len(room.usersMap)
+	if userCount == room.maxUserCount {
+		return false
+	}
+	// Only add if not already present
+	if _, exists := room.usersMap[user.name]; exists {
+		return false
+	}
+	room.usersMap[user.name] = user
+	user.joinedRooms[room.name] = room
+	return true
 }
 
+// RemoveUserFromRoom atomically removes a user from a room and the room from the user's joinedRooms.
+// Locks Room first, then User to avoid deadlocks.
 func (rs *RoomService) RemoveUserFromRoom(user *User, roomName string) bool {
-	rs.mu.Lock()
-	defer rs.mu.Unlock()
+	rs.mu.RLock() // Only reading roomMap
 	room, ok := rs.roomMap[roomName]
-	if ok {
-		room.RemoveUserFromRoom(user)
-		return true
+	rs.mu.RUnlock()
+	if !ok {
+		return false
 	}
-	return false
+
+	room.mu.Lock()
+	defer room.mu.Unlock()
+	user.mu.Lock()
+	defer user.mu.Unlock()
+
+	if _, exists := room.usersMap[user.name]; !exists {
+		return false
+	}
+	delete(room.usersMap, user.name)
+	delete(user.joinedRooms, room.name)
+	return true
 }
