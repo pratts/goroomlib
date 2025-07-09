@@ -14,9 +14,9 @@ func (rs *RoomService) GetRoomMap() map[string]Room {
 	return rs.roomMap
 }
 
-func (rs *RoomService) CreateRoom(roomName string, maxUsers int, roomProperties map[string]interface{}) Room {
+func (rs *RoomService) CreateRoom(roomName string, maxUsers int) Room {
 	room := Room{id: rs.numRoomsCreated + 1, name: roomName, maxUserCount: maxUsers}
-	room.Init(roomProperties)
+	room.Init()
 	rs.numRoomsCreated += 1
 	rs.addRoom(room)
 	return room
@@ -28,7 +28,7 @@ func (rs *RoomService) addRoom(room Room) {
 
 func (rs *RoomService) RemoveRoom(roomName string) {
 	room, ok := rs.roomMap[roomName]
-	if ok == true {
+	if ok {
 		room.RemoveAllUsers()
 	}
 	delete(rs.roomMap, roomName)
@@ -41,7 +41,7 @@ func (rs *RoomService) GetRoomByName(roomName string) (Room, bool) {
 
 func (rs *RoomService) GetUserForRoom(roomName string) map[string]User {
 	room, ok := rs.roomMap[roomName]
-	if ok == true {
+	if ok {
 		return room.GetUserMap()
 	}
 	return nil
@@ -49,7 +49,7 @@ func (rs *RoomService) GetUserForRoom(roomName string) map[string]User {
 
 func (rs *RoomService) AddUserToRoom(user User, roomName string) bool {
 	room, ok := rs.roomMap[roomName]
-	if ok == true {
+	if ok {
 		userCount := len(room.usersMap)
 		if userCount == room.maxUserCount {
 			return false
@@ -62,7 +62,7 @@ func (rs *RoomService) AddUserToRoom(user User, roomName string) bool {
 
 func (rs *RoomService) RemoveUserFromRoom(user User, roomName string) bool {
 	room, ok := rs.roomMap[roomName]
-	if ok == true {
+	if ok {
 		room.RemoveUserFromRoom(user)
 		return true
 	}

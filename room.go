@@ -1,35 +1,14 @@
 package goroomlib
 
-import (
-	"encoding/json"
-)
-
 type Room struct {
-	id             int
-	name           string
-	usersMap       map[string]User
-	maxUserCount   int
-	roomProperties RoomProperties
+	id           int
+	name         string
+	usersMap     map[string]User
+	maxUserCount int
 }
 
-type RoomProperties struct {
-	IsPassword bool   `json:"isPasswordProtected"`
-	Password   string `json:"password"`
-}
-
-func (r *Room) Init(roomProperties map[string]interface{}) {
+func (r *Room) Init() {
 	r.createUserMap()
-	if roomProperties == nil || len(roomProperties) == 0 {
-		roomProperties = make(map[string]interface{})
-		roomProperties["IsPassword"] = false
-	}
-	jsonbody, err := json.Marshal(roomProperties)
-	if err != nil {
-		return
-	}
-
-	r.roomProperties = RoomProperties{}
-	json.Unmarshal(jsonbody, &(r.roomProperties))
 }
 
 func (r *Room) GetId() int {

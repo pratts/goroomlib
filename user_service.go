@@ -11,10 +11,10 @@ func (us *UserService) Init() {
 	us.userIdMap = make(map[int]User)
 }
 
-func (us *UserService) CreateUser(userId int, name string, userProperties map[string]interface{}) User {
+func (us *UserService) CreateUser(userId int, name string) User {
 	us.lastUserId += 1
 	user := User{id: us.lastUserId, userId: userId, name: name}
-	user.Init(userProperties)
+	user.Init()
 
 	us.usernameMap[name] = user
 	us.userIdMap[us.lastUserId] = user
@@ -28,14 +28,14 @@ func (us *UserService) GetUserByName(name string) (User, bool) {
 
 func (us *UserService) RemoveUserByName(name string) {
 	user, err := us.usernameMap[name]
-	if err == false {
+	if !err {
 		user.Remove()
 	}
 }
 
 func (us *UserService) RemoveUserById(id int) {
 	user, err := us.userIdMap[id]
-	if err == false {
+	if !err {
 		user.Remove()
 	}
 }
