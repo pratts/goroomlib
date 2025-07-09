@@ -2,8 +2,10 @@ package goroomlib
 
 import "sync"
 
+// RoomService manages all rooms in the system.
+// All access to roomMap and numRoomsCreated is protected by mu for thread safety.
 type RoomService struct {
-	mu              sync.RWMutex
+	mu              sync.RWMutex // protects roomMap and numRoomsCreated
 	roomMap         map[string]*Room
 	numRoomsCreated int
 }
@@ -63,7 +65,7 @@ func (rs *RoomService) GetUserForRoom(roomName string) map[string]*User {
 }
 
 // AddUserToRoom atomically adds a user to a room and the room to the user's joinedRooms.
-// Locks Room first, then User to avoid deadlocks.
+// Locks Room first, then User to avoid deadlocks. Returns true if successful.
 func (rs *RoomService) AddUserToRoom(user *User, roomName string) bool {
 	rs.mu.RLock() // Only reading roomMap
 	room, ok := rs.roomMap[roomName]
@@ -92,7 +94,7 @@ func (rs *RoomService) AddUserToRoom(user *User, roomName string) bool {
 }
 
 // RemoveUserFromRoom atomically removes a user from a room and the room from the user's joinedRooms.
-// Locks Room first, then User to avoid deadlocks.
+// Locks Room first, then User to avoid deadlocks. Returns true if successful.
 func (rs *RoomService) RemoveUserFromRoom(user *User, roomName string) bool {
 	rs.mu.RLock() // Only reading roomMap
 	room, ok := rs.roomMap[roomName]

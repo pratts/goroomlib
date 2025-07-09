@@ -2,8 +2,9 @@ package goroomlib
 
 import "sync"
 
+// Room represents a chat/game room. All access to usersMap is protected by mu for thread safety.
 type Room struct {
-	mu           sync.RWMutex
+	mu           sync.RWMutex // protects usersMap
 	id           int
 	name         string
 	usersMap     map[string]*User
@@ -29,7 +30,7 @@ func (r *Room) createUserMap() map[string]*User {
 	return r.usersMap
 }
 
-// GetUserMap returns a copy of the users map to avoid exposing internal state.
+// GetUserMap returns a copy of the users map to avoid exposing internal state. Safe for concurrent use.
 func (r *Room) GetUserMap() map[string]*User {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

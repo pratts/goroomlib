@@ -2,8 +2,10 @@ package goroomlib
 
 import "sync"
 
+// UserService manages all users in the system.
+// All access to usernameMap, userIdMap, and lastUserId is protected by mu for thread safety.
 type UserService struct {
-	mu          sync.RWMutex
+	mu          sync.RWMutex // protects usernameMap, userIdMap, lastUserId
 	usernameMap map[string]*User
 	userIdMap   map[int]*User
 	lastUserId  int

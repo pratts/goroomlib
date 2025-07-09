@@ -2,8 +2,9 @@ package goroomlib
 
 import "sync"
 
+// User represents a user in the system. All access to joinedRooms is protected by mu for thread safety.
 type User struct {
-	mu          sync.RWMutex
+	mu          sync.RWMutex // protects joinedRooms
 	id          int
 	userId      int
 	name        string
