@@ -37,10 +37,26 @@ func (u *User) GetIsConnected() bool {
 	return u.isConnected
 }
 
+// GetJoinedRooms returns a copy of the joinedRooms map to avoid exposing internal state.
 func (u *User) GetJoinedRooms() map[string]*Room {
 	u.mu.RLock()
 	defer u.mu.RUnlock()
-	return u.joinedRooms
+	copyMap := make(map[string]*Room, len(u.joinedRooms))
+	for k, v := range u.joinedRooms {
+		copyMap[k] = v
+	}
+	return copyMap
+}
+
+// GetJoinedRoomNames returns a slice of room names the user has joined.
+func (u *User) GetJoinedRoomNames() []string {
+	u.mu.RLock()
+	defer u.mu.RUnlock()
+	names := make([]string, 0, len(u.joinedRooms))
+	for name := range u.joinedRooms {
+		names = append(names, name)
+	}
+	return names
 }
 
 // addRoom is unexported; atomic add should be done via RoomService

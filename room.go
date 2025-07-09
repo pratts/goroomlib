@@ -29,10 +29,26 @@ func (r *Room) createUserMap() map[string]*User {
 	return r.usersMap
 }
 
+// GetUserMap returns a copy of the users map to avoid exposing internal state.
 func (r *Room) GetUserMap() map[string]*User {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	return r.usersMap
+	copyMap := make(map[string]*User, len(r.usersMap))
+	for k, v := range r.usersMap {
+		copyMap[k] = v
+	}
+	return copyMap
+}
+
+// GetUserNames returns a slice of user names in the room.
+func (r *Room) GetUserNames() []string {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	names := make([]string, 0, len(r.usersMap))
+	for name := range r.usersMap {
+		names = append(names, name)
+	}
+	return names
 }
 
 func (r *Room) GetMaxUserCount() int {
