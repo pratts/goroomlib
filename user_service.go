@@ -1,19 +1,19 @@
 package goroomlib
 
 type UserService struct {
-	usernameMap map[string]User
-	userIdMap   map[int]User
+	usernameMap map[string]*User
+	userIdMap   map[int]*User
 	lastUserId  int
 }
 
 func (us *UserService) Init() {
-	us.usernameMap = make(map[string]User)
-	us.userIdMap = make(map[int]User)
+	us.usernameMap = make(map[string]*User)
+	us.userIdMap = make(map[int]*User)
 }
 
-func (us *UserService) CreateUser(userId int, name string) User {
+func (us *UserService) CreateUser(userId int, name string) *User {
 	us.lastUserId += 1
-	user := User{id: us.lastUserId, userId: userId, name: name}
+	user := &User{id: us.lastUserId, userId: userId, name: name}
 	user.Init()
 
 	us.usernameMap[name] = user
@@ -21,7 +21,7 @@ func (us *UserService) CreateUser(userId int, name string) User {
 	return user
 }
 
-func (us *UserService) GetUserByName(name string) (User, bool) {
+func (us *UserService) GetUserByName(name string) (*User, bool) {
 	user, err := us.usernameMap[name]
 	return user, err
 }

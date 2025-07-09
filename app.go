@@ -18,10 +18,10 @@ func InitApp() *App {
 	return &app
 }
 
-func (app *App) GetRoomService() RoomService {
-	return app.roomService
+func (app *App) GetRoomService() *RoomService {
+	return &app.roomService
 }
 
-func (app *App) GetUserService() UserService {
-	return app.userService
+func (app *App) GetUserService() *UserService {
+	return &app.userService
 }
